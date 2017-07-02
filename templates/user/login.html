@@ -1,0 +1,29 @@
+{% extends "template.html" %}
+
+{% block content %}
+    <h3>Log in</h3>
+    <form action="/user/login" method="post">
+        <div class="form-group {{ 'has-error' if error }}">
+            <label>
+                Username
+                <input
+                    class="form-control"
+                    type="text"
+                    name="username"
+                >
+            </label>
+        </div>
+
+        <div class="form-group {{ 'has-error' if error }}">
+            <label>
+                Password
+                <input class="form-control" type="password" name="password">
+            </label>
+        </div>
+
+        {% if error %}
+            <div class="text-danger">Username and/or password was incorrect</div>
+        {% endif %}
+        <button class="btn btn-primary">Login</button> <a class="btn btn-default" href="/user/signup">Register</a>
+    </form>
+{% endblock %}
