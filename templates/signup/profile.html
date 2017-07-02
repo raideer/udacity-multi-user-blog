@@ -13,4 +13,14 @@
             You don't have any posts! <a class="btn btn-xs btn-info" href="/newpost">Create one</a>
         {% endif %}
     </ul>
+    <h4>Your comments:</h4>
+    <ul>
+        {% if u.comments.count() > 0 %}
+            {% for comment in u.comments %}
+                <li><a href="/post/{{comment.post.key().id()}}">{{comment.content|truncate(50)}}</a></li>
+            {% endfor %}
+        {% else %}
+            You haven't commented yet
+        {% endif %}
+    </ul>
 {% endblock %}
