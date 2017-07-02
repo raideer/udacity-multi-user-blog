@@ -1,0 +1,21 @@
+{% extends "template.html" %}
+
+{% block content %}
+    <h2>New post</h2>
+    <form method="post" style="margin-top: 50px;">
+        <div class="form-group">
+            <label>
+                Post title
+                <input type="text" name="subject" value="{{subject}}" class="form-control" placeholder="Post title">
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                Post content
+                <textarea name="content" class="form-control" style="min-width:600px;min-height:300px;">{{content}}</textarea>
+            </label>
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+        {{error}}
+    </form>
+{% endblock %}

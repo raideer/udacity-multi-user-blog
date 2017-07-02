@@ -1,0 +1,42 @@
+{% extends "template.html" %}
+
+{% block content %}
+    {% if user %}
+        <ul class="nav nav-pills">
+            <li role="presentation"><a href="/newpost">Create a post</a></li>
+        </ul>
+    {% endif %}
+    <div class="posts">
+        {% if posts.count() > 0 %}
+            {% for post in posts %}
+                <div class="pull-left {{ 'disable-rating' if user.id == post.author.key().id() or not user }}" style="margin-right: 10px;text-align:center;">
+                    <div>
+                        <a data-role="rate" data-action="upvote" data-id="{{post.key().id()}}" href="#">
+                            <i class="glyphicon glyphicon-triangle-top"></i>
+                        </a>
+                    </div>
+                    <div><strong data-role="rating" data-id="{{post.key().id()}}">{{post.liked_by|length - post.disliked_by|length}}</strong></div>
+                    <div>
+                        <a data-role="rate" data-action="downvote" data-id="{{post.key().id()}}" href="#">
+                            <i class="glyphicon glyphicon-triangle-bottom"></i>
+                        </a>
+                    </div>
+                </div>
+                <a href="/post/{{post.key().id()}}"><h4>{{post.subject}}</h4></a>
+                <p class="text-muted">
+                    Posted by <strong>{{post.author.username}}</strong> | {{post.created.strftime('%Y-%m-%d')}} | <i class="glyphicon glyphicon-comment"></i> {{post.comments.count()}}
+                </p>
+                <p>{{post.content}}</p>
+                {% if user.id == post.author.key().id() %}
+                    <div class="btn-group btn-group-xs" role="group">
+                        <a href="/post/{{post.key().id()}}/edit" class="btn btn-default">Edit</a>
+                        <a href="/post/{{post.key().id()}}/delete" class="btn btn-default">Delete</a>
+                    </div>
+                {% endif %}
+                <hr>
+            {% endfor %}
+        {% else %}
+            No posts found
+        {% endif %}
+    </div>
+{% endblock %}

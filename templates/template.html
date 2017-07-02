@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://bootswatch.com/readable/bootstrap.min.css">
+    <style>
+        .posts {
+            padding-top: 20px;
+        }
+
+        .disable-rating, .disable-rating a{
+            pointer-events: none;
+            cursor: default;
+            color: #8a8a8a;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Multi User Blog</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    {% if user %}
+                        <p class="navbar-text">Signed in as <strong>{{ user.name }}</strong></p>
+                        <li><a href="/user/profile">Profile</a></li>
+                        <li><a href="/user/logout">Log out</a></li>
+                    {% else %}
+                        <li><a href="/user/signup">Register</a></li>
+                        <li><a href="/user/login">Log in</a></li>
+                    {% endif %}
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div>
+    </nav>
+
+    <div id="main" class="container" style="padding-top: 80px">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        $('[data-role="rate"]').on('click', function(){
+            var action = $(this).data('action');
+            var id = $(this).data('id');
+
+            $.post('/post/'+id+'/'+action, function(data){
+                if (data.error) {
+                    alert(data.error)
+                }else{
+                    $('[data-role="rating"][data-id="'+id+'"]').html(data.votes)
+                }
+            });
+        });
+    </script>
+    {% block scripts %}
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,16 @@
+{% extends "template.html" %}
+
+{% block content %}
+    <h3>Welcome, {{ u.username }}</h3>
+    <hr>
+    <h4>Your posts:</h4>
+    <ul>
+        {% if u.posts.count() > 0 %}
+            {% for post in u.posts %}
+                <li><a href="/post/{{post.key().id()}}">{{post.subject}}</a></li>
+            {% endfor %}
+        {% else %}
+            You don't have any posts! <a class="btn btn-xs btn-info" href="/newpost">Create one</a>
+        {% endif %}
+    </ul>
+{% endblock %}

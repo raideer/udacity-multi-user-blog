@@ -1,0 +1,76 @@
+{% extends "template.html" %}
+
+{% block content %}
+    <div class="pull-left {{ 'disable-rating' if user.id == post.author.key().id() or not user }}" style="margin-right: 10px;text-align:center;">
+        <div>
+            <a data-role="rate" data-action="upvote" data-id="{{post.key().id()}}" href="#">
+                <i class="glyphicon glyphicon-triangle-top"></i>
+            </a>
+        </div>
+        <div><strong data-role="rating" data-id="{{post.key().id()}}">{{post.liked_by|length - post.disliked_by|length}}</strong></div>
+        <div>
+            <a data-role="rate" data-action="downvote" data-id="{{post.key().id()}}" href="#">
+                <i class="glyphicon glyphicon-triangle-bottom"></i>
+            </a>
+        </div>
+    </div>
+    <h2>{{post.subject}}</h2>
+    <p class="text-muted">
+        Posted by <strong>{{post.author.username}}</strong> | {{post.created.strftime('%Y-%m-%d')}}
+    </p>
+    {% if user.id == post.author.key().id() %}
+        <div class="btn-group btn-group-xs" role="group">
+            <a href="/post/{{post.key().id()}}/edit" class="btn btn-default">Edit</a>
+            <a href="/post/{{post.key().id()}}/delete" class="btn btn-default">Delete</a>
+        </div>
+    {% endif %}
+    <hr>
+    <p>{{post.content}}</p>
+    <hr>
+    <h4>Comments <small>({{post.comments.count()}})</small></h4>
+    {% if user %}
+        <form action="{{post.key().id()}}/comment" method="post" style="margin-bottom: 20px;">
+            <div class="form-group">
+                <textarea placeholder="Comment..." name="content" style="max-width:500px;" class="form-control"></textarea>
+            </div>
+            <button class="btn btn-sm btn-default">Submit</button>
+        </form>
+    {% else %}
+        <p><a href="/user/login">Log in</a> to comment</p>
+    {% endif %}
+    {% if post.comments.count() > 0 %}
+        {% for comment in post.comments.order('-created') %}
+            <div>
+                <strong>{{comment.author.username}}</strong> <span class="text-muted">{{comment.created.strftime('%Y-%m-%d')}}</span>
+                <p data-role="content" style="padding:3px;">{{comment.content}}</p>
+                <form data-role="editor" class="hidden" style="margin-bottom:5px;" method="post" action="/comment/edit">
+                    <input type="hidden" name="comment_id" value="{{comment.key().id()}}">
+                    <input type="hidden" name="post_key" value="{{post.key()}}">
+                    <textarea class="form-control" style="max-width:500px;" name="content">{{comment.content}}</textarea>
+                    <button class="btn btn-xs btn-default">Save</button>
+                </form>
+                {% if comment.author.key().id() == user.id %}
+                    <form style="display:inline-block;" method="post" action="/comment/delete">
+                        <input type="hidden" name="comment_id" value="{{comment.key().id()}}">
+                        <input type="hidden" name="post_key" value="{{post.key()}}">
+                        <button class="btn btn-xs btn-default">Delete</button>
+                    </form>
+                    <a href="#" data-role="edit" class="btn btn-xs btn-default">Edit</a>
+                {% endif %}
+                <hr>
+            </div>
+        {% endfor %}
+    {% else %}
+        This post doesn't have any comments
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $('[data-role="edit"]').on('click', function(){
+            $parent = $(this).parent();
+            $parent.find('[data-role="content"]').toggleClass('hidden');
+            $parent.find('[data-role="editor"]').toggleClass('hidden');
+        });
+    </script>
+{% endblock %}

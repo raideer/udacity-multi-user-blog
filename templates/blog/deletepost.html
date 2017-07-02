@@ -1,0 +1,8 @@
+{% extends "template.html" %}
+
+{% block content %}
+    <h2>Are you sure you want to delete <i>{{post.subject}}</i>?</h2>
+    <form method="post" style="margin-top: 50px;">
+        <button type="submit" class="btn btn-danger">Delete</button> <a class="btn btn-default" href="/">Cancel</a>
+    </form>
+{% endblock %}
